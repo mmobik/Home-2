@@ -1,0 +1,785 @@
+ТЕСТЫ ДЛЯ ЗАДАЧИ 18 (ХЕШ-ТАБЛИЦА)
+================================================================================
+
+ТЕСТ 1
+------------------------------------------------------------
+Описание: Пример из условия
+Статус: ✅ ПРОЙДЕН
+Время: 0.073549 сек
+Память: 6.11 МБ
+
+ВХОДНЫЕ ДАННЫЕ:
+10
+get 1
+put 1 10
+put 2 4
+get 1
+get 2
+delete 2
+get 2
+put 1 5
+get 1
+delete 2
+
+ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+None
+10
+4
+4
+None
+5
+None
+
+ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+None
+10
+4
+4
+None
+5
+None
+
+============================================================
+
+ТЕСТ 2
+------------------------------------------------------------
+Описание: Второй пример из условия
+Статус: ✅ ПРОЙДЕН
+Время: 0.072663 сек
+Память: 6.10 МБ
+
+ВХОДНЫЕ ДАННЫЕ:
+8
+get 9
+delete 9
+put 9 1
+get 9
+put 9 2
+get 9
+put 9 3
+get 9
+
+ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+None
+None
+1
+2
+3
+
+ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+None
+None
+1
+2
+3
+
+============================================================
+
+ТЕСТ 3
+------------------------------------------------------------
+Описание: Минимальный тест - запрос несуществующего ключа
+Статус: ✅ ПРОЙДЕН
+Время: 0.074922 сек
+Память: 6.10 МБ
+
+ВХОДНЫЕ ДАННЫЕ:
+1
+get 1
+
+ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+None
+
+ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+None
+
+============================================================
+
+ТЕСТ 4
+------------------------------------------------------------
+Описание: Добавление, чтение, удаление
+Статус: ✅ ПРОЙДЕН
+Время: 0.070303 сек
+Память: 6.10 МБ
+
+ВХОДНЫЕ ДАННЫЕ:
+3
+put 1 100
+get 1
+delete 1
+
+ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+100
+100
+
+ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+100
+100
+
+============================================================
+
+ТЕСТ 5
+------------------------------------------------------------
+Описание: Обновление значения
+Статус: ✅ ПРОЙДЕН
+Время: 0.073424 сек
+Память: 6.10 МБ
+
+ВХОДНЫЕ ДАННЫЕ:
+4
+put 1 10
+put 1 20
+get 1
+delete 1
+
+ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+20
+20
+
+ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+20
+20
+
+============================================================
+
+ТЕСТ 6
+------------------------------------------------------------
+Описание: Удаление и чтение несуществующего ключа
+Статус: ✅ ПРОЙДЕН
+Время: 0.070547 сек
+Память: 6.10 МБ
+
+ВХОДНЫЕ ДАННЫЕ:
+3
+delete 1
+get 1
+put 1 100
+
+ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+None
+None
+
+ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+None
+None
+
+============================================================
+
+ТЕСТ 7
+------------------------------------------------------------
+Описание: Максимальное количество операций (1,000,000)
+Статус: ✅ ПРОЙДЕН
+Время: 17.386899 сек
+Память: 200.40 МБ
+
+ВХОДНЫЕ ДАННЫЕ:
+Количество операций: 1000000
+Размер данных: 18183517 символов
+Полные данные сохранены в отдельном файле
+
+
+ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+ПРОВЕРКА ВЫПОЛНЕНИЯ БЕЗ ОШИБОК
+
+ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+Размер вывода: 3333852 строк
+Первые 10 строк:
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+...
+
+============================================================
+
+ТЕСТ 8
+------------------------------------------------------------
+Описание: Максимальные значения ключей и данных (10^9)
+Статус: ✅ ПРОЙДЕН
+Время: 1.232531 сек
+Память: 18.69 МБ
+
+ВХОДНЫЕ ДАННЫЕ:
+Количество операций: 100000
+Размер данных: 1974879 символов
+Полные данные сохранены в отдельном файле
+
+
+ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+ПРОВЕРКА ВЫПОЛНЕНИЯ БЕЗ ОШИБОК
+
+ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+Размер вывода: 447059 строк
+Первые 10 строк:
+999983630
+999992254
+999949562
+999993820
+999999834
+999912796
+999958844
+999975506
+999990204
+999950852
+...
+
+============================================================
+
+ТЕСТ 9
+------------------------------------------------------------
+Описание: 100,000 уникальных ключей + 100,000 операций чтения
+Статус: ✅ ПРОЙДЕН
+Время: 2.948006 сек
+Память: 49.83 МБ
+
+ВХОДНЫЕ ДАННЫЕ:
+Количество операций: 200000
+Размер данных: 2703651 символов
+Полные данные сохранены в отдельном файле
+
+
+ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+ПРОВЕРКА ВЫПОЛНЕНИЯ БЕЗ ОШИБОК
+
+ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+Размер вывода: 626070 строк
+Первые 10 строк:
+None
+None
+None
+664390
+None
+None
+544820
+819490
+907530
+67280
+...
+
+============================================================
+
+ТЕСТ 10
+------------------------------------------------------------
+Описание: Тест на коллизии хешей
+Статус: ✅ ПРОЙДЕН
+Время: 0.630207 сек
+Память: 6.22 МБ
+
+ВХОДНЫЕ ДАННЫЕ:
+Количество операций: 1000
+Размер данных: 14787 символов
+Полные данные сохранены в отдельном файле
+
+
+ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+ПРОВЕРКА ВЫПОЛНЕНИЯ БЕЗ ОШИБОК
+
+ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+
+============================================================
+

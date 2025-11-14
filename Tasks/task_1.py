@@ -1,6 +1,7 @@
 from Algorithms_and_structures import parser_numbers
 
 def binary_search(arr, k):
+    """Функция бинарного поиска для делителя."""    
     right = max(arr)
     left = 1
     while left <= right:
@@ -15,6 +16,7 @@ def binary_search(arr, k):
     return right
 
 def main():
+    """Основаня функция программы."""
     n = parser_numbers(input())
     num_of_wires = n[0]
     k = n[1]
@@ -24,7 +26,7 @@ def main():
         arr.append(int(input()))
 
     result = binary_search(arr, k)
-    print(result)
+    return result
 
 if __name__ == "__main__":
-    main()
+    print(main())

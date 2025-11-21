@@ -1,84 +1,209 @@
+import os
+import sys
+import json
 from Algorithms_and_structures import HashTable
 
-class ExternalHashTable:
-    def __init__(self, filename="database.bin"):
-        self.filename = filename
+
+class ExternalMemoryDatabase:
+    def __init__(self, data_file="database.dat", index_file="index.json"):
+        self.data_file = data_file
+        self.index_file = index_file
         self.index = HashTable()
-        
+        self.current_position = 0
+
+        self._initialize_files()
+        self._load_index()
+        self._sync_current_position()
+
+    def _initialize_files(self):
+        if not os.path.exists(self.data_file):
+            open(self.data_file, 'wb').close()
+
+    def _load_index(self):
+        try:
+            if os.path.exists(self.index_file):
+                with open(self.index_file, 'r') as f:
+                    data = json.load(f)
+                    for key, value in data['index'].items():
+                        self.index.put(key, tuple(value))
+                    self.current_position = data['current_position']
+        except (FileNotFoundError, json.JSONDecodeError, KeyError, TypeError):
+            self.index = HashTable()
+            self.current_position = 0
+
+    def _save_index(self):
+        try:
+            index_dict = {}
+            for key in self.index:
+                value = self.index.get(key)
+                index_dict[key] = list(value) if value else []
+
+            json_data = {
+                'index': index_dict,
+                'current_position': self.current_position
+            }
+            with open(self.index_file, 'w') as f:
+                json.dump(json_data, f)
+        except (IOError, TypeError):
+            pass
+
+    def _sync_current_position(self):
+        try:
+            self.current_position = os.path.getsize(self.data_file)
+        except (OSError, FileNotFoundError):
+            self.current_position = 0
+
+    def _rebuild_database(self):
+        try:
+            temp_file = self.data_file + ".tmp"
+            new_index = HashTable()
+            new_position = 0
+
+            with open(temp_file, 'wb') as new_f:
+                for key in self.index:
+                    old_data = self.index.get(key)
+                    if old_data is None:
+                        continue
+                    old_pos, key_size, value_size = old_data
+
+                    with open(self.data_file, 'rb') as old_f:
+                        old_f.seek(old_pos)
+                        record_data = old_f.read(8 + key_size + value_size)
+
+                    new_f.write(record_data)
+                    new_index.put(key, (new_position, key_size, value_size))
+                    new_position += len(record_data)
+
+            os.replace(temp_file, self.data_file)
+            self.index = new_index
+            self.current_position = new_position
+            return True
+        except (IOError, OSError, KeyError):
+            return False
+
     def add(self, key, value):
         if self.index.get(key) is not None:
-            return "ERROR"
-        
-        with open(self.filename, "ab") as f:
-            position = f.tell()
-            record = f"{len(key)}|{key}|{value}\n"
-            f.write(record.encode())
-            
-        self.index.put(key, (position, len(value)))
-        return None
-    
-    def get(self, key):
-        index_data = self.index.get(key)
-        if index_data is None:
-            return "ERROR"
-        
-        position, value_len = index_data
-        with open(self.filename, "rb") as f:
-            f.seek(position)
-            record = f.readline().decode().strip()
-            parts = record.split('|', 2)
-            return f"{key} {parts[2]}"
-    
-    def update(self, key, value):
-        if self.index.get(key) is None:
-            return "ERROR"
-        
-        self.delete(key)
-        self.add(key, value)
-        return None
-    
+            return False
+
+        key_bytes = key.encode('utf-8')
+        value_bytes = value.encode('utf-8')
+        total_size = 8 + len(key_bytes) + len(value_bytes)
+
+        try:
+            with open(self.data_file, 'ab') as f:
+                position = self.current_position
+                f.write(len(key_bytes).to_bytes(4, byteorder='big'))
+                f.write(key_bytes)
+                f.write(len(value_bytes).to_bytes(4, byteorder='big'))
+                f.write(value_bytes)
+
+                self.index.put(key, (position, len(key_bytes), len(value_bytes)))
+                self.current_position += total_size
+
+            self._save_index()
+            return True
+        except (IOError, OSError):
+            return False
+
     def delete(self, key):
         if self.index.get(key) is None:
-            return "ERROR"
-        self.index.delete(key)
-        return None
+            return False
+
+        deleted_value = self.index.delete(key)
+        if deleted_value is None:
+            return False
+
+        if self.index.size == 0:
+            try:
+                with open(self.data_file, 'wb') as f:
+                    f.truncate(0)
+                self.current_position = 0
+                if os.path.exists(self.index_file):
+                    os.remove(self.index_file)
+            except (IOError, OSError):
+                return False
+        else:
+            if not self._rebuild_database():
+                return False
+            self._save_index()
+
+        return True
+
+    def update(self, key, value):
+        if self.index.get(key) is None:
+            return False
+
+        old_data = self.index.get(key)
+        if not self.delete(key):
+            return False
+
+        if not self.add(key, value):
+            self.index.put(key, old_data)
+            self._save_index()
+            return False
+
+        return True
+
+    def print(self, key):
+        value = self.index.get(key)
+        if value is None:
+            return False
+
+        position, key_size, value_size = value
+
+        try:
+            with open(self.data_file, 'rb') as f:
+                f.seek(position)
+                stored_key_size = int.from_bytes(f.read(4), byteorder='big')
+                stored_key = f.read(stored_key_size).decode('utf-8')
+                stored_value_size = int.from_bytes(f.read(4), byteorder='big')
+                stored_value = f.read(stored_value_size).decode('utf-8')
+
+                print(f"{stored_key} {stored_value}")
+                return True
+        except (IOError, OSError, UnicodeDecodeError, ValueError):
+            return False
+
 
 def main():
-    import sys
-    
+    database = ExternalMemoryDatabase()
+
     n = int(sys.stdin.readline().strip())
-    db = ExternalHashTable()
-    
-    for i in range(n):
+
+    for _ in range(n):
         line = sys.stdin.readline().strip()
-        if not line:
-            continue
-            
         parts = line.split()
+
         command = parts[0]
-        
+
         if command == "ADD":
-            key, value = parts[1], parts[2]
-            result = db.add(key, value)
-            if result:
-                print(result)
-                
+            if len(parts) == 3:
+                if not database.add(parts[1], parts[2]):
+                    print("ERROR")
+            else:
+                print("ERROR")
+
         elif command == "DELETE":
-            key = parts[1]
-            result = db.delete(key)
-            if result:
-                print(result)
-                
+            if len(parts) == 2:
+                if not database.delete(parts[1]):
+                    print("ERROR")
+            else:
+                print("ERROR")
+
         elif command == "UPDATE":
-            key, value = parts[1], parts[2]
-            result = db.update(key, value)
-            if result:
-                print(result)
-                
+            if len(parts) == 3:
+                if not database.update(parts[1], parts[2]):
+                    print("ERROR")
+            else:
+                print("ERROR")
+
         elif command == "PRINT":
-            key = parts[1]
-            result = db.get(key)
-            print(result)
+            if len(parts) == 2:
+                if not database.print(parts[1]):
+                    print("ERROR")
+            else:
+                print("ERROR")
+
 
 if __name__ == "__main__":
     main()

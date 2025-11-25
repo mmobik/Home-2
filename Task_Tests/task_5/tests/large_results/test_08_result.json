@@ -1,0 +1,13 @@
+{
+  "test_number": 8,
+  "total_tests": 21,
+  "description": "Добавление дубликата",
+  "status": "✅ ПРОЙДЕН",
+  "passed": true,
+  "time_seconds": 0.001215800002682954,
+  "memory_mb": 0.01508331298828125,
+  "input_data": "2\nADD KEY VALUE\nADD KEY VALUE",
+  "expected_output": "ERROR",
+  "actual_output": "ERROR",
+  "check_result_only": false
+}

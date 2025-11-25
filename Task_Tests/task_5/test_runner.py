@@ -5,6 +5,8 @@ import os
 from io import StringIO
 from test_cases import generate_test_cases
 import traceback
+import json
+from datetime import datetime
 
 
 def run_tests():
@@ -14,6 +16,17 @@ def run_tests():
 
     print("Запуск тестов для задачи с базой данных...")
     print(f"Всего тестов: {total_tests}")
+
+    # Создаем директорию для результатов
+    results_dir = os.path.join("tests", "large_results")
+    os.makedirs(results_dir, exist_ok=True)
+    
+    # Список для хранения всех результатов
+    all_results = []
+    
+    # Время начала тестирования
+    test_run_start = datetime.now()
+
 
     # Правильный путь к решению
     solution_path = r"C:\Users\hak18\PycharmProjects\Home-2\Tasks\task_5.py"
@@ -70,7 +83,20 @@ def run_tests():
         print(f"\nТест {i}/{total_tests}: {case.get('description', '')}")
 
         input_data = case["input"]
-        expected = case["expected"]
+        expected = case.get("expected", None)
+        check_result_only = "result" in case  # Если есть поле result, проверяем только выполнение
+
+        # Создаем уникальные файлы для каждого теста
+        test_data_file = f"test_{i}_database.dat"
+        test_index_file = f"test_{i}_index.json"
+        
+        # Очищаем старые файлы если они существуют
+        for old_file in [test_data_file, test_index_file, "database.dat", "index.json"]:
+            if os.path.exists(old_file):
+                try:
+                    os.remove(old_file)
+                except:
+                    pass
 
         time_taken = 0
         memory_used = 0
@@ -80,6 +106,9 @@ def run_tests():
         try:
             old_stdin = sys.stdin
             old_stdout = sys.stdout
+            
+            # Модифицируем входные данные для использования уникальных файлов
+            # Это делается через переменные окружения или модификацию модуля
             sys.stdin = StringIO(input_data)
             captured_output = StringIO()
             sys.stdout = captured_output
@@ -99,7 +128,11 @@ def run_tests():
             result = captured_output.getvalue().strip()
 
             # Сравниваем результат с ожидаемым
-            if result == expected:
+            if check_result_only:
+                # Для тестов с result - проверяем только успешное выполнение
+                status = "✅ ПРОЙДЕН (выполнение без ошибок)"
+                passed_tests += 1
+            elif result == expected:
                 status = "✅ ПРОЙДЕН"
                 passed_tests += 1
 
@@ -110,16 +143,149 @@ def run_tests():
         finally:
             sys.stdin = old_stdin
             sys.stdout = old_stdout
+            
+            # Очищаем файлы теста после выполнения
+            for test_file in [test_data_file, test_index_file, "database.dat", "index.json"]:
+                if os.path.exists(test_file):
+                    try:
+                        os.remove(test_file)
+                    except:
+                        pass
 
         print(f"  Статус: {status}")
         print(f"  Время: {time_taken:.6f} сек")
         print(f"  Память: {memory_used:.2f} МБ")
 
-        if status == "❌ НЕ ПРОЙДЕН":
-            print(f"  Ожидалось: {expected}")
+        if status.startswith("❌"):
+            if not check_result_only:
+                print(f"  Ожидалось: {expected}")
             print(f"  Получено: {result}")
 
+        # Сохраняем результаты теста
+        test_result = {
+            "test_number": i,
+            "total_tests": total_tests,
+            "description": case.get('description', ''),
+            "status": status,
+            "passed": status.startswith("✅"),
+            "time_seconds": time_taken,
+            "memory_mb": memory_used,
+            "input_data": input_data,
+            "expected_output": expected if not check_result_only else "N/A (проверка только выполнения)",
+            "actual_output": result,
+            "check_result_only": check_result_only
+        }
+        
+        all_results.append(test_result)
+        
+        # Сохраняем результат теста в отдельный файл
+        test_result_file = os.path.join(results_dir, f"test_{i:02d}_result.json")
+        try:
+            with open(test_result_file, 'w', encoding='utf-8') as f:
+                json.dump(test_result, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"  ⚠️ Не удалось сохранить результат теста: {e}")
+        
+        # Также сохраняем в текстовом формате для удобства чтения
+        test_result_txt = os.path.join(results_dir, f"test_{i:02d}_result.txt")
+        try:
+            with open(test_result_txt, 'w', encoding='utf-8') as f:
+                f.write(f"Тест {i}/{total_tests}: {case.get('description', '')}\n")
+                f.write(f"{'='*80}\n\n")
+                f.write(f"Статус: {status}\n")
+                f.write(f"Время: {time_taken:.6f} сек\n")
+                f.write(f"Память: {memory_used:.2f} МБ\n\n")
+                
+                # Входные данные (первые 1000 символов)
+                f.write(f"Входные данные (первые 1000 символов):\n")
+                f.write(f"{'-'*80}\n")
+                f.write(f"{input_data[:1000]}\n")
+                if len(input_data) > 1000:
+                    f.write(f"... (всего {len(input_data)} символов)\n")
+                f.write(f"\n")
+                
+                # Ожидаемый вывод
+                if not check_result_only:
+                    f.write(f"Ожидаемый вывод (первые 1000 символов):\n")
+                    f.write(f"{'-'*80}\n")
+                    expected_str = str(expected)
+                    f.write(f"{expected_str[:1000]}\n")
+                    if len(expected_str) > 1000:
+                        f.write(f"... (всего {len(expected_str)} символов)\n")
+                    f.write(f"\n")
+                
+                # Фактический вывод
+                f.write(f"Фактический вывод (первые 1000 символов):\n")
+                f.write(f"{'-'*80}\n")
+                result_str = str(result)
+                f.write(f"{result_str[:1000]}\n")
+                if len(result_str) > 1000:
+                    f.write(f"... (всего {len(result_str)} символов)\n")
+        except Exception as e:
+            print(f"  ⚠️ Не удалось сохранить текстовый результат теста: {e}")
+
+
+
+
     print(f"\nИтог: Пройдено {passed_tests} из {total_tests} тестов.")
+    
+    # Сохраняем итоговый отчет
+    test_run_end = datetime.now()
+    test_run_duration = (test_run_end - test_run_start).total_seconds()
+    
+    summary = {
+        "test_run_start": test_run_start.isoformat(),
+        "test_run_end": test_run_end.isoformat(),
+        "total_duration_seconds": test_run_duration,
+        "total_tests": total_tests,
+        "passed_tests": passed_tests,
+        "failed_tests": total_tests - passed_tests,
+        "success_rate": (passed_tests / total_tests * 100) if total_tests > 0 else 0,
+        "results": all_results
+    }
+    
+    # Сохраняем итоговый JSON
+    summary_file = os.path.join(results_dir, "summary.json")
+    try:
+        with open(summary_file, 'w', encoding='utf-8') as f:
+            json.dump(summary, f, ensure_ascii=False, indent=2)
+        print(f"\n✅ Результаты сохранены в: {results_dir}")
+        print(f"   - summary.json - итоговый отчет")
+        print(f"   - test_XX_result.json - результаты каждого теста (JSON)")
+        print(f"   - test_XX_result.txt - результаты каждого теста (текст)")
+    except Exception as e:
+        print(f"\n⚠️ Не удалось сохранить итоговый отчет: {e}")
+    
+    # Сохраняем итоговый текстовый отчет
+    summary_txt = os.path.join(results_dir, "summary.txt")
+    try:
+        with open(summary_txt, 'w', encoding='utf-8') as f:
+            f.write("="*80 + "\n")
+            f.write("ИТОГОВЫЙ ОТЧЕТ ПО ТЕСТИРОВАНИЮ\n")
+            f.write("="*80 + "\n\n")
+            
+            f.write(f"Начало тестирования: {test_run_start.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"Окончание тестирования: {test_run_end.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"Общее время выполнения: {test_run_duration:.2f} сек\n\n")
+            
+            f.write(f"Всего тестов: {total_tests}\n")
+            f.write(f"Пройдено: {passed_tests}\n")
+            f.write(f"Провалено: {total_tests - passed_tests}\n")
+            f.write(f"Процент успеха: {passed_tests / total_tests * 100:.2f}%\n\n")
+            
+            f.write("="*80 + "\n")
+            f.write("РЕЗУЛЬТАТЫ ТЕСТОВ\n")
+            f.write("="*80 + "\n\n")
+            
+            for result in all_results:
+                f.write(f"Тест {result['test_number']}/{result['total_tests']}: {result['description']}\n")
+                f.write(f"  Статус: {result['status']}\n")
+                f.write(f"  Время: {result['time_seconds']:.6f} сек\n")
+                f.write(f"  Память: {result['memory_mb']:.2f} МБ\n")
+                f.write("\n")
+    except Exception as e:
+        print(f"⚠️ Не удалось сохранить текстовый итоговый отчет: {e}")
+    
     return passed_tests, total_tests
 
 

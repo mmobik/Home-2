@@ -1,0 +1,13 @@
+{
+  "test_number": 6,
+  "total_tests": 21,
+  "description": "Добавление, удаление и чтение",
+  "status": "✅ ПРОЙДЕН",
+  "passed": true,
+  "time_seconds": 0.0019244999857619405,
+  "memory_mb": 0.014070510864257812,
+  "input_data": "3\nADD KEY VALUE\nDELETE KEY\nPRINT KEY",
+  "expected_output": "ERROR",
+  "actual_output": "ERROR",
+  "check_result_only": false
+}

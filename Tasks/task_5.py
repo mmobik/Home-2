@@ -5,11 +5,12 @@ from Algorithms_and_structures import HashTable
 
 
 class ExternalMemoryDatabase:
-    def __init__(self, data_file="database.dat", index_file="index.json"):
+    def __init__(self, data_file="database.dat", index_file="index.json", auto_save=True):
         self.data_file = data_file
         self.index_file = index_file
         self.index = HashTable()
         self.current_position = 0
+        self.auto_save = auto_save  # Флаг автосохранения индекса
 
         self._initialize_files()
         self._load_index()
@@ -57,6 +58,16 @@ class ExternalMemoryDatabase:
             self.current_position = os.path.getsize(self.data_file)
         except (OSError, FileNotFoundError):
             self.current_position = 0
+    
+    def cleanup(self):
+        """Очистка файлов базы данных"""
+        try:
+            if os.path.exists(self.data_file):
+                os.remove(self.data_file)
+            if os.path.exists(self.index_file):
+                os.remove(self.index_file)
+        except (OSError, FileNotFoundError):
+            pass
 
     def _rebuild_database(self):
         # Полная перестройка файла данных без удаленных записей
@@ -112,7 +123,9 @@ class ExternalMemoryDatabase:
                 self.index.put(key, (position, len(key_bytes), len(value_bytes)))
                 self.current_position += total_size
 
-            self._save_index()
+            # Сохраняем индекс только если включено автосохранение
+            if self.auto_save:
+                self._save_index()
             return True
         except (IOError, OSError):
             return False
@@ -187,7 +200,8 @@ class ExternalMemoryDatabase:
 
 
 def main():
-    database = ExternalMemoryDatabase()
+    # Отключаем автосохранение для ускорения работы
+    database = ExternalMemoryDatabase(auto_save=False)
 
     # Чтение количества команд
     n = int(sys.stdin.readline().strip())
@@ -225,7 +239,11 @@ def main():
                     print("ERROR")
             else:
                 print("ERROR")
+    
+    # Сохраняем индекс один раз в конце
+    database._save_index()
 
 
 if __name__ == "__main__":
     main()
+

@@ -301,4 +301,105 @@ def generate_stress_cases():
         "expected": ""
     })
     
+    # Тест 6: Максимальная длина ключей и значений (4096 символов)
+    test6_commands = []
+    n = 200
+    expected_output = []
+    
+    # Генерация строк максимальной длины (4096 символов)
+    max_length = 4096
+    
+    for i in range(n // 2):
+        # Создаем ключ и значение ровно 4096 символов
+        key = f"K{i:05d}" + "a" * (max_length - 6)
+        value = f"V{i:05d}" + "b" * (max_length - 6)
+        test6_commands.append(f"ADD {key} {value}")
+    
+    for i in range(n // 2):
+        key = f"K{i:05d}" + "a" * (max_length - 6)
+        test6_commands.append(f"PRINT {key}")
+        expected_output.append(f"{key} V{i:05d}" + "b" * (max_length - 6))
+    
+    test6_input = f"{n}\n" + "\n".join(test6_commands)
+    
+    tests.append({
+        "input": test6_input,
+        "description": "200 операций с максимальной длиной ключей и значений (4096 символов)",
+        "expected": "\n".join(expected_output)
+    })
+    
+    # Тест 7 (это будет тест 16): Граничный случай - 300000 строк (максимум по условию)
+    # Первые 150000 команд - ADD, следующие 150000 - PRINT
+    test7_commands = []
+    n = 300000
+    
+    # Первые 150000 команд - ADD
+    for i in range(150000):
+        key = f"MAXKEY{i:08d}"
+        value = f"MAXVAL{i:08d}"
+        test7_commands.append(f"ADD {key} {value}")
+    
+    # Следующие 150000 команд - PRINT существующих ключей
+    for i in range(150000):
+        key = f"MAXKEY{i:08d}"
+        test7_commands.append(f"PRINT {key}")
+    
+    test7_input = f"{n}\n" + "\n".join(test7_commands)
+    
+    # Для этого теста используем result вместо expected
+    tests.append({
+        "input": test7_input,
+        "description": "300000 операций (максимум): 150000 ADD + 150000 PRINT",
+        "result": None  # Используем result вместо expected для проверки только выполнения
+    })
+    
+    # Тест 8: Комбинация максимальной длины и большого количества операций
+    test8_commands = []
+    n = 10000
+    expected_output = []
+    
+    # Длинные ключи (2048 символов) и значения (2048 символов)
+    key_length = 2048
+    value_length = 2048
+    
+    # Первые 5000 - ADD
+    for i in range(5000):
+        key = f"LK{i:06d}" + "x" * (key_length - 8)
+        value = f"LV{i:06d}" + "y" * (value_length - 8)
+        test8_commands.append(f"ADD {key} {value}")
+    
+    # Следующие 5000 - PRINT
+    for i in range(5000):
+        key = f"LK{i:06d}" + "x" * (key_length - 8)
+        test8_commands.append(f"PRINT {key}")
+        expected_output.append(f"{key} LV{i:06d}" + "y" * (value_length - 8))
+    
+    test8_input = f"{n}\n" + "\n".join(test8_commands)
+    
+    tests.append({
+        "input": test8_input,
+        "description": "10000 операций с длинными ключами/значениями (2048 символов)",
+        "expected": "\n".join(expected_output)
+    })
+    
+    # Тест 9: Граничный случай - одна операция с максимальными строками
+    test9_commands = []
+    n = 2
+    expected_output = []
+    
+    max_key = "K" + "z" * 4095
+    max_value = "V" + "w" * 4095
+    
+    test9_commands.append(f"ADD {max_key} {max_value}")
+    test9_commands.append(f"PRINT {max_key}")
+    expected_output.append(f"{max_key} {max_value}")
+    
+    test9_input = f"{n}\n" + "\n".join(test9_commands)
+    
+    tests.append({
+        "input": test9_input,
+        "description": "Одна запись с максимальной длиной ключа и значения (4096 символов)",
+        "expected": "\n".join(expected_output)
+    })
+    
     return tests

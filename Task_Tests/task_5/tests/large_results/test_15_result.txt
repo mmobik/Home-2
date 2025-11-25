@@ -1,15 +1,67 @@
-ТЕСТ 15
-------------------------------------------------------------
-Описание: 5000 смешанных операций
-Статус: ✅ ПРОЙДЕН
-Время: 0.014617 сек
-Память: 0.62 МБ
+Тест 15/21: 5000 смешанных операций
+================================================================================
 
-ВХОДНЫЕ ДАННЫЕ:
-Сохранено в файл: C:\Users\hak18\PycharmProjects\Home-2\Task_Tests\task_5\tests\large_results\test_15_input.txt
-Размер: 100845 символов
+Статус: ❌ НЕ ПРОЙДЕН
+Время: 109.523371 сек
+Память: 1.23 МБ
 
-ОЖИДАЕМЫЙ РЕЗУЛЬТАТ:
+Входные данные (первые 1000 символов):
+--------------------------------------------------------------------------------
+5000
+ADD KEY0000 VAL00000
+UPDATE KEY0001 NEWVAL00001
+DELETE KEY0002
+PRINT KEY0003
+ADD UNIQUE00004 UVAL00004
+PRINT UNIQUE00005
+ADD KEY0006 VAL00006
+UPDATE KEY0007 NEWVAL00007
+DELETE KEY0008
+PRINT KEY0009
+ADD UNIQUE00010 UVAL00010
+PRINT UNIQUE00011
+ADD KEY0012 VAL00012
+UPDATE KEY0013 NEWVAL00013
+DELETE KEY0014
+PRINT KEY0015
+ADD UNIQUE00016 UVAL00016
+PRINT UNIQUE00017
+ADD KEY0018 VAL00018
+UPDATE KEY0019 NEWVAL00019
+DELETE KEY0020
+PRINT KEY0021
+ADD UNIQUE00022 UVAL00022
+PRINT UNIQUE00023
+ADD KEY0024 VAL00024
+UPDATE KEY0025 NEWVAL00025
+DELETE KEY0026
+PRINT KEY0027
+ADD UNIQUE00028 UVAL00028
+PRINT UNIQUE00029
+ADD KEY0030 VAL00030
+UPDATE KEY0031 NEWVAL00031
+DELETE KEY0032
+PRINT KEY0033
+ADD UNIQUE00034 UVAL00034
+PRINT UNIQUE00035
+ADD KEY0036 VAL00036
+UPDATE KEY0037 NEWVAL00037
+DELETE KEY0038
+PRINT KEY0039
+ADD UNIQUE00040 UVAL00040
+PRINT UNIQUE00041
+ADD KEY0042 VAL00042
+UPDATE KEY0043 NEWVAL00043
+DELETE KEY0044
+PRINT KEY0045
+ADD UNIQUE00046 UVAL00046
+PRINT UNIQUE00047
+ADD KEY0048 VAL00048
+UPDATE
+... (всего 100845 символов)
+
+Ожидаемый вывод (первые 1000 символов):
+--------------------------------------------------------------------------------
 ERROR
 ERROR
 ERROR
@@ -111,9 +163,10 @@ ERROR
 ERROR
 UNIQUE00149 UVAL00149
 
-... [еще 37653 символов]
+... (всего 38653 символов)
 
-ФАКТИЧЕСКИЙ РЕЗУЛЬТАТ:
+Фактический вывод (первые 1000 символов):
+--------------------------------------------------------------------------------
 ERROR
 ERROR
 ERROR
@@ -281,7 +334,4 @@ ERROR
 ERROR
 ERROR
 ERRO
-... [еще 15997 символов]
-
-============================================================
-
+... (всего 16997 символов)

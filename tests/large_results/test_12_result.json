@@ -1,0 +1,13 @@
+{
+  "test_number": 12,
+  "total_tests": 21,
+  "description": "Работа с разными ключами",
+  "status": "ПРОЙДЕН",
+  "passed": true,
+  "time_seconds": 0.01856759999998303,
+  "memory_mb": 0.018179893493652344,
+  "input_data": "5\nADD A 1\nADD B 2\nPRINT A\nUPDATE A 10\nPRINT A",
+  "expected_output": "A 1\nA 10",
+  "actual_output": "A 1\nA 10",
+  "check_result_only": false
+}

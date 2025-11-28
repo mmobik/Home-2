@@ -1,0 +1,13 @@
+{
+  "test_number": 7,
+  "total_tests": 21,
+  "description": "Добавление, обновление и чтение",
+  "status": "ПРОЙДЕН",
+  "passed": true,
+  "time_seconds": 0.009398099999998522,
+  "memory_mb": 0.015032768249511719,
+  "input_data": "3\nADD KEY VALUE\nUPDATE KEY NEWVALUE\nPRINT KEY",
+  "expected_output": "KEY NEWVALUE",
+  "actual_output": "KEY NEWVALUE",
+  "check_result_only": false
+}

@@ -1,0 +1,13 @@
+{
+  "test_number": 11,
+  "total_tests": 21,
+  "description": "ADD → UPDATE → DELETE → PRINT",
+  "status": "ПРОЙДЕН",
+  "passed": true,
+  "time_seconds": 0.0020410000000197215,
+  "memory_mb": 0.013885498046875,
+  "input_data": "4\nADD K1 V1\nUPDATE K1 V2\nDELETE K1\nPRINT K1",
+  "expected_output": "ERROR",
+  "actual_output": "ERROR",
+  "check_result_only": false
+}

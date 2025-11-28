@@ -1,0 +1,13 @@
+{
+  "test_number": 1,
+  "total_tests": 21,
+  "description": "Базовые операции: ADD, UPDATE, DELETE, PRINT",
+  "status": "ПРОЙДЕН",
+  "passed": true,
+  "time_seconds": 0.029765900000029433,
+  "memory_mb": 0.022599220275878906,
+  "input_data": "10\nADD KEY1 VAL1\nADD KEY2 VAL2\nADD KEY3 VAL3\nPRINT KEY1\nUPDATE KEY2 NEWVAL2\nPRINT KEY2\nDELETE KEY3\nPRINT KEY3\nADD KEY4 VAL4\nPRINT KEY4",
+  "expected_output": "KEY1 VAL1\nKEY2 NEWVAL2\nERROR\nKEY4 VAL4",
+  "actual_output": "KEY1 VAL1\nKEY2 NEWVAL2\nERROR\nKEY4 VAL4",
+  "check_result_only": false
+}

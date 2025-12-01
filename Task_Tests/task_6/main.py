@@ -86,10 +86,18 @@ def save_test_result(test_number, description, input_data, result, expected, sta
         if result is None:
             f.write("НЕТ ВЫВОДА\n")
         elif len(str(result)) > 10000:
-            f.write(f"Размер вывода: {len(str(result))} строк\n")
+            f.write(f"Размер вывода: {len(str(result))} символов\n")
+            result_lines = str(result).split('\n')
+            f.write(f"Количество строк: {len(result_lines)}\n")
             f.write("Первые 10 строк:\n")
-            f.write('\n'.join(str(result).split('\n')[:10]) + "\n")
+            f.write('\n'.join(result_lines[:10]) + "\n")
             f.write("...\n")
+            f.write("Полный вывод сохранен в отдельном файле\n")
+            
+            # Сохранение полного вывода в отдельный файл
+            output_filename = os.path.join(large_dir, f'test_{test_number}_output.txt')
+            with open(output_filename, 'w', encoding='utf-8') as output_file:
+                output_file.write(str(result))
         else:
             f.write(str(result) + "\n")
         f.write("\n" + "=" * 60 + "\n\n")
@@ -115,7 +123,7 @@ def run_tests_simple():
 
     # Очистка больших файлов
     for file in os.listdir(large_dir):
-        if file.startswith('test_') and file.endswith('_input.txt'):
+        if file.startswith('test_') and (file.endswith('_input.txt') or file.endswith('_output.txt')):
             os.remove(os.path.join(large_dir, file))
 
     print("Запуск тестов для задачи 18 (Хеш-таблица)...")

@@ -14,6 +14,22 @@ def generate_test_cases():
     # Максимальные тесты
     test_cases.extend(generate_max_cases())
 
+import random
+
+
+def generate_test_cases():
+    """Генерация тестовых случаев для задачи 18"""
+    test_cases = []
+
+    # Базовые тесты из условия
+    test_cases.extend(generate_basic_cases())
+
+    # Граничные тесты
+    test_cases.extend(generate_edge_cases())
+
+    # Максимальные тесты
+    test_cases.extend(generate_max_cases())
+
     # Тесты на коллизии
     test_cases.extend(generate_collision_cases())
 
@@ -36,7 +52,7 @@ put 1 5
 get 1
 delete 2""",
             "description": "Пример из условия",
-            "expected": "None\n10\n4\n4\nNone\n5\nNone"
+            "expected": "None\n10\n4\nTrue\nNone\n5\nFalse"
         },
         {
             "input": """8
@@ -49,7 +65,7 @@ get 9
 put 9 3
 get 9""",
             "description": "Второй пример из условия",
-            "expected": "None\nNone\n1\n2\n3"
+            "expected": "None\nFalse\n1\n2\n3"
         }
     ]
 
@@ -69,7 +85,7 @@ put 1 100
 get 1
 delete 1""",
             "description": "Добавление, чтение, удаление",
-            "expected": "100\n100"
+            "expected": "100\nTrue"
         },
         {
             "input": """4
@@ -78,7 +94,7 @@ put 1 20
 get 1
 delete 1""",
             "description": "Обновление значения",
-            "expected": "20\n20"
+            "expected": "20\nTrue"
         },
         {
             "input": """3
@@ -86,7 +102,7 @@ delete 1
 get 1
 put 1 100""",
             "description": "Удаление и чтение несуществующего ключа",
-            "expected": "None\nNone"
+            "expected": "False\nNone"
         }
     ]
 
@@ -248,9 +264,9 @@ def solve_hash_table_problem(input_data):
                 continue
             key = int(parts[1])
             if key in database:
-                output_lines.append(str(database[key]))
                 del database[key]
+                output_lines.append("True")
             else:
-                output_lines.append("None")
+                output_lines.append("False")
 
     return "\n".join(output_lines)

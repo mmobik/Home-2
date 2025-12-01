@@ -1,7 +1,7 @@
 from Algorithms_and_structures import HashTable
 
 def get_anagram_key(word):
-    """Создает ключ анаграммы через подсчет букв за O(L) вместо O(L log L)"""
+    """Создает ключ анаграммы через подсчет букв за O(L)"""
     # Создаем массив счетчиков для 26 букв A-Z
     count = [0] * 26
     

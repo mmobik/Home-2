@@ -13,7 +13,7 @@ class FenwickTree:
             i += i & -i
     
     def query(self, index):
-        """Запрос префиксной суммы [0..index] за O(log n)"""
+        """Запрос префиксной суммы за O(log n)"""
         res = 0
         i = index + 1
         while i > 0:
@@ -22,7 +22,7 @@ class FenwickTree:
         return res
     
     def range_sum(self, l, r):
-        """Запрос суммы на отрезке [l, r] за O(log n)"""
+        """Запрос суммы на отрезке за O(log n)"""
         if l == 0:
             return self.query(r)
         return self.query(r) - self.query(l - 1)

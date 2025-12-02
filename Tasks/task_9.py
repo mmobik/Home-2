@@ -5,6 +5,10 @@ def minimal_palindrome_extension(s):
     if n == 0:
         return ""
     
+    # Особый случай: строка из одного символа
+    if n == 1:
+        return s + s  # S2 должно быть непустым, минимальный вариант - тот же символ
+    
     base = 31
     mod = 10**9 + 7
     
@@ -33,11 +37,15 @@ def minimal_palindrome_extension(s):
         return (rh[rev_r] - rh[rev_l] * p[rev_r - rev_l]) % mod
     
     # Ищем максимальный палиндромный суффикс
-    for i in range(n):
+    # Начинаем с i=1, так как S2 должно быть непустым (i=0 дало бы S2 = "")
+    for i in range(1, n):
         if get_hash(i, n) == get_rev_hash(i, n):
+            # Нашли палиндромный суффикс, начинающийся с позиции i
             prefix_to_add = s[:i][::-1]
             return s + prefix_to_add
     
+    # Если не нашли подходящий суффикс или строка уже палиндром
+    # Добавляем всю строку кроме последнего символа
     return s + s[:-1][::-1]
 
 def main():

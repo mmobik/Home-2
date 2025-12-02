@@ -14,20 +14,30 @@ def unpack_generator(s):
             elif s[i].isdigit():
                 num = 0
                 # Читаем число целиком
-                while s[i].isdigit():
+                while i < len(s) and s[i].isdigit():  # проверка i < len(s)
                     num = num * 10 + int(s[i])
                     i += 1
-                i += 1  # Пропускаем '['
-                # Сохраняем текущий контекст
-                stack.append((result, num))
-                result = []
+                if i < len(s) and s[i] == '[':  # Проверяем, что есть '['
+                    i += 1  # Пропускаем '['
+                    # Сохраняем текущий контекст
+                    stack.append((result, num))
+                    result = []
+                else:
+                    # Если нет '[', то это просто цифры
+                    result.append(str(num))
             elif s[i] == ']':
                 i += 1
-                # Повторяем внутренний блок
-                inner = ''.join(result)
-                prev_result, repeat = stack.pop()
-                prev_result.append(inner * repeat)
-                result = prev_result
+                if stack:  # Проверяем, что стек не пустой
+                    # Повторяем внутренний блок
+                    inner = ''.join(result)
+                    prev_result, repeat = stack.pop()
+                    prev_result.append(inner * repeat)
+                    result = prev_result
+                # Иначе игнорируем лишнюю ']'
+            else:
+                # Другие символы (пропускаем или обрабатываем)
+                result.append(s[i])
+                i += 1
         return ''.join(result)
     
     # Возвращаем символы распакованной строки
@@ -36,8 +46,25 @@ def unpack_generator(s):
         yield ch
 
 def main():
-    n = int(sys.stdin.readline())
-    strings = [sys.stdin.readline().strip() for _ in range(n)]
+    try:
+        n_line = sys.stdin.readline()
+        if not n_line:
+            return
+        n = int(n_line.strip())
+    except ValueError:
+        return
+    
+    strings = []
+    for _ in range(n):
+        line = sys.stdin.readline()
+        if line:
+            strings.append(line.strip())
+        else:
+            strings.append("")
+    
+    if n == 0:
+        print("")
+        return
     
     # Создаём генераторы для каждой строки
     gens = [unpack_generator(s) for s in strings]
@@ -45,7 +72,6 @@ def main():
     
     try:
         while True:
-            # Берём символ из первой строки
             first_char = next(gens[0])
             # Сверяем с остальными
             for i in range(1, n):

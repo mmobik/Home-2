@@ -11,7 +11,7 @@ def solve():
     
     # Цвета плиток
     second_line = sys.stdin.readline().strip()
-    tiles = list[int](map[int](int, second_line.split()))
+    tiles = list(map(int, second_line.split()))
     
     # Настройки хеширования
     base = 137
@@ -49,24 +49,19 @@ def solve():
     
     results = []
     
-    # Проверяем все возможные K
-    for K in range(n, 0, -1):
-        L = n - K  # сколько плиток Ваня видит перед собой
+    # Проверяем все возможные K в порядке убывания
+    # K - количество реальных плиток
+    # Условие: первые K плиток должны образовывать палиндром
+    for k in range(n, 0, -1):
+        # Проверяем, является ли префикс длины k палиндромом
+        # Сравниваем хэш префикса с хэшем перевёрнутого префикса
+        prefix_hash = get_hash(0, k)
+        # Перевёрнутый префикс: последние k элементов в обратном порядке
+        # Это соответствует префиксу длины k в rev_tiles, начиная с позиции n-k
+        reversed_prefix_hash = get_rev_hash(n - k, n)
         
-        # Условие 1: видимые плитки - палиндром
-        if not is_palindrome(0, L):
-            continue
-        
-        # Условие 2: они должны повторяться дальше
-        if L + L > n:
-            continue
-            
-        # Проверяем совпадение
-        hash1 = get_hash(0, L)
-        hash2 = get_hash(L, L + L)
-        
-        if hash1 == hash2:
-            results.append(str(K))
+        if prefix_hash == reversed_prefix_hash:
+            results.append(str(k))
     
     print(" ".join(results))
 

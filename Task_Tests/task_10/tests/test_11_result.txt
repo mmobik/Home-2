@@ -1,0 +1,20 @@
+Тест 11/14: Случайный валидный тест (составлен из префиксов)
+================================================================================
+
+Статус: ПРОЙДЕН
+Время: 0.000571 сек
+Память: 0.0162783 МБ
+
+Входные данные:
+--------------------------------------------------------------------------------
+caacbaaacacccacbaaaaaccacaccccbabcbaacbbbaabaababb
+caacbaaacacccacbaaaaaccacaccccbabcbaacbcaacbaaacacccacbacaacaacbaaacacccacbaaaaaccacaccccbabcbaacbbbaabaabcaacbaaacacccacbaaaaaccacacccccaacbaaacacccacbaaaaaccacaccccbabcbcaacbaaacaacbaaacacccacbaaaaaccaccaacbacaacbaaacacccacbaaaaaccacaccccbabcbacaacbaaacacccacbaaacaacbaaacacccacbaaaaaccacaccccbabcbaacbbbcaacbaaacacccacbaaaaaccacaccccbabcbaacbbcaacbaaacacccacbaaaaaccacaacbaaacacccacbaaaaaccacaccccbabcbaacaacbaaacaccccaacbaaacacccacbaaaaaccacaccccbabcbaacbbbaabaacaacbcaacaacbaaacacccacbaaaaaccacaccccbabcbaacbbbaa
+
+Ожидаемый вывод:
+--------------------------------------------------------------------------------
+No
+
+Фактический вывод:
+--------------------------------------------------------------------------------
+No
+caacbaaacacccacbaaaaaccacaccccbabcbaacb caacbaaacacccacba caa caacbaaacacccacbaaaaaccacaccccbabcbaacbbbaabaab caacbaaacacccacbaaaaaccacacccc caacbaaacacccacbaaaaaccacaccccbabcb caacbaaa caacbaaacacccacbaaaaaccac caacba caacbaaacacccacbaaaaaccacaccccbabcba caacbaaacacccacbaaa caacbaaacacccacbaaaaaccacaccccbabcbaacbbb caacbaaacacccacbaaaaaccacaccccbabcbaacbb caacbaaacacccacbaaaaacca caacbaaacacccacbaaaaaccacaccccbabcbaa caacbaaacaccc caacbaaacacccacbaaaaaccacaccccbabcbaacbbbaabaa caacb caa caacbaaacacccacbaaaaaccacaccccbabcbaacbbbaa

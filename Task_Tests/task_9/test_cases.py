@@ -7,25 +7,44 @@ def solve_reference(s):
     """
     Эталонное (медленное) решение для проверки.
     Проверяет все возможные добавления.
+    Условие: добавленная часть S2 должна быть непустой.
     """
     n = len(s)
     if n == 0:
         return ""
-    # Пробуем добавить i символов с начала строки (в обратном порядке)
-    for i in range(n):
-        # Суффикс s[i:] должен быть палиндромом
+    # Пробуем найти палиндромный суффикс, начиная с индекса 1 (чтобы префикс был непустым)
+    for i in range(1, n):
         suffix = s[i:]
         if suffix == suffix[::-1]:
             return s + s[:i][::-1]
-    return s + s[::-1] # В худшем случае (хотя цикл выше покроет это)
+    # Если не нашли, добавляем всю строку (кроме, возможно, последнего символа? Нет, всю перевернутую)
+    # Но подождите, если i доходит до n-1, суффикс - последний символ (палиндром).
+    # Если цикл завершился, значит даже последний символ не подошел? 
+    # Нет, последний символ всегда палиндром. Цикл всегда найдет решение, если n > 0.
+    # Единственный случай, когда цикл не сработает - если n=1.
+    if n == 1:
+        return s + s
+        
+    return s + s[:-1][::-1] # На всякий случай, но логика выше должна покрыть
 
 def generate_random_string(length):
     chars = "abcdefghijklmnopqrstuvwxyz"
     return "".join(random.choice(chars) for _ in range(length))
 
+def generate_random_palindrome(length):
+    half_len = length // 2
+    chars = "abcdefghijklmnopqrstuvwxyz"
+    half = "".join(random.choice(chars) for _ in range(half_len))
+    if length % 2 == 0:
+        return half + half[::-1]
+    else:
+        mid = random.choice(chars)
+        return half + mid + half[::-1]
+
 def generate_test_cases():
     """Генерация тестовых случаев для задачи 9"""
     test_cases = []
+    random.seed(42)
     
     # Тест 1: Базовый пример (нет палиндромного суффикса > 1)
     test_cases.append({
@@ -34,11 +53,11 @@ def generate_test_cases():
         "expected": "abcdedcba"
     })
     
-    # Тест 2: Уже палиндром
+    # Тест 2: Уже палиндром (S2 должно быть непустым)
     test_cases.append({
         "input": "abacaba",
-        "description": "Строка уже является палиндромом",
-        "expected": "abacaba"
+        "description": "Строка уже является палиндромом (S2 непустое)",
+        "expected": "abacabacaba"
     })
     
     # Тест 3: Суффикс-палиндром есть (banana -> anana)
@@ -48,11 +67,11 @@ def generate_test_cases():
         "expected": "bananab"
     })
     
-    # Тест 4: Все символы одинаковые
+    # Тест 4: Все символы одинаковые (S2 непустое)
     test_cases.append({
         "input": "aaaaa",
-        "description": "Все символы одинаковые",
-        "expected": "aaaaa"
+        "description": "Все символы одинаковые (S2 непустое)",
+        "expected": "aaaaaa"
     })
     
     # Тест 5: Почти палиндром, но лишний символ в начале
@@ -69,11 +88,11 @@ def generate_test_cases():
         "expected": ""
     })
     
-    # Тест 7: Один символ
+    # Тест 7: Один символ (S2 непустое)
     test_cases.append({
         "input": "z",
-        "description": "Один символ",
-        "expected": "z"
+        "description": "Один символ (S2 непустое)",
+        "expected": "zz"
     })
     
     # Тест 8: Два разных символа
@@ -91,33 +110,23 @@ def generate_test_cases():
         "expected": solve_reference(s_rand_small)
     })
 
-    # Тест 10: Длинная строка из одинаковых символов (проверка переполнения хешей)
-    long_a = "a" * 1000
+    # Тест 10: Случайная строка средней длины
+    s_rand_1000 = generate_random_string(1000)
     test_cases.append({
-        "input": long_a,
-        "description": "Длинная строка из 'a' (1000)",
-        "expected": long_a
+        "input": s_rand_1000,
+        "description": "Случайная строка (1000 символов)",
+        "expected": solve_reference(s_rand_1000)
     })
 
-    # Тест 11: Длинная строка, где палиндром только последний символ
-    # abcde...z -> abcde...z...edcba
+    # Тест 11: Длинная строка без палиндромов (1000)
     long_seq = "".join(chr(ord('a') + (i % 26)) for i in range(1000))
-    # Сделаем так, чтобы суффиксов-палиндромов не было (или были очень короткие)
-    # Для простоты возьмем эталонное решение, оно справится с 1000
     test_cases.append({
         "input": long_seq,
         "description": "Длинная строка без палиндромов (1000)",
         "expected": solve_reference(long_seq)
     })
 
-    # Тест 12: Большой тест (10^5 символов) - случайная строка
-    # Ожидаемый результат не сохраняем для экономии места в коде, 
-    # но в main.py он не будет проверяться для больших тестов.
-    # Однако для генерации expected нам нужно что-то.
-    # Для больших тестов expected можно оставить пустым или сгенерировать reference (но это долго).
-    # В main.py логика: если тест большой, expected игнорируется.
-    
-    random.seed(42)
+    # Тест 12: Случайная большая строка (10^5)
     large_len = 100000
     large_s = generate_random_string(large_len)
     
@@ -127,22 +136,21 @@ def generate_test_cases():
         "expected": "" # Не проверяем expected для больших тестов
     })
     
-    # Тест 13: Большой тест - почти палиндром (худший случай для хешей?)
-    # a...ab...b (много a, потом много b)
-    # Нет, худший случай для хешей - коллизии, но здесь полиномиальный хеш.
-    # Худший случай для алгоритма - когда палиндромный суффикс очень короткий.
-    worst_case = "a" * 50000 + "b" + "a" * 49999
-    # Суффикс "a"*49999 - палиндром.
-    # Нужно добавить "a"*50000 + "b" в обратном порядке? Нет.
-    # Строка: A...AB A...A
-    # Суффикс A...A (49999) - палиндром.
-    # Префикс A...AB (50001). Его перевернем: BA...A
-    # Результат: A...AB A...A BA...A
-    
+    # Тест 13: Большой случайный палиндром (10^5)
+    large_pal = generate_random_palindrome(100000)
     test_cases.append({
-        "input": worst_case,
-        "description": "Большая строка 'почти палиндром' (10^5)",
-        "expected": "" # Не проверяем
+        "input": large_pal,
+        "description": "Большой случайный палиндром (10^5)",
+        "expected": "" 
+    })
+
+    # Тест 14: Случайная строка с большим палиндромным суффиксом
+    # 50000 случайных + 50000 палиндром
+    mixed_s = generate_random_string(50000) + generate_random_palindrome(50000)
+    test_cases.append({
+        "input": mixed_s,
+        "description": "Случайная строка с палиндромным суффиксом (10^5)",
+        "expected": ""
     })
 
     return test_cases

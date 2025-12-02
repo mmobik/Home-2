@@ -34,17 +34,35 @@ def solve():
     prev_len = [0] * (n2 + 1)  # для восстановления ответа
     dp[0] = True
     
+    # Оптимизация: храним границу, до которой мы уже обновили dp
+    max_reached = 0
+    
     for i in range(n2):
         if not dp[i]:
             continue
+        
         # Позиция начала s2[i:] в конкатенации
         pos = n1 + 1 + i
         max_len = z[pos]  # сколько символов можно взять как префикс s1
         
-        for L in range(1, max_len + 1):
-            if i + L <= n2:
-                dp[i + L] = True
-                prev_len[i + L] = L
+        if max_len == 0:
+            continue
+
+        # Нам нужно обновить dp[i+1 ... i+max_len]
+        # Но обновляем только те, что еще не были обновлены (начиная с max_reached + 1)
+        # Это гарантирует, что каждая ячейка dp обновляется только 1 раз -> O(N)
+        start_update = max(i + 1, max_reached + 1)
+        end_update = min(i + max_len, n2)
+        
+        for j in range(start_update, end_update + 1):
+            dp[j] = True
+            prev_len[j] = j - i
+        
+        max_reached = max(max_reached, end_update)
+        
+        # Если уже достигли конца, можно досрочно прервать (опционально, но полезно)
+        if max_reached == n2:
+            break
     
     if dp[n2]:
         # Восстанавливаем разбиение
